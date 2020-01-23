@@ -1,3 +1,5 @@
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -20,7 +22,15 @@ app.use(morgan('dev', { immediate: true }));
 // Anfrage auf localhost/movie an Router weiterleiten
 app.use('/movie', movieRouter);
 
+const options = {
+  key: fs.readFileSync('./cert/localhost.key'),
+  cert: fs.readFileSync('./cert/localhost.cert')
+}
 
-app.listen(8080, () => {
-  console.log('Server ist listening on port 8080');
-})
+https.createServer(options, app).listen(8080, () => {
+  console.log('Server ist listening to http://localhost:8080');
+});
+
+//app.listen(8080, () => {
+//  console.log('Server ist listening on port 8080');
+//})
